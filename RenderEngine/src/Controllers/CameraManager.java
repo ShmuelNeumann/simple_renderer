@@ -3,6 +3,7 @@ package Controllers;
 import display.Display;
 import display.Keyboard;
 import geometry.Camera;
+import utils.RenderType;
 import utils.SphericalCoords;
 import utils.Vector3;
 import utils.VectorMath;
@@ -41,7 +42,7 @@ public class CameraManager {
         this.camera = camera;
     }
 
-    public void updateCamPos(LightManager lightManager, Keyboard keyboard, Display display) {
+    public void updateCamPos(RenderType renderType, LightManager lightManager, Keyboard keyboard, Display display) {
 
         // move the focus point:
 
@@ -113,7 +114,7 @@ public class CameraManager {
         camera.setForwardDirection(newCamForward);
         camera.setUpwardDirection(newCamUpward);
 
-        SimpleRenderer.getInstance().updateScreenVertices(lightManager, GeometryManager.getInstance(), display, camera);
+        SimpleRenderer.getInstance().updateScreenVertices(renderType, lightManager, GeometryManager.getInstance(), display, camera);
 
 
         

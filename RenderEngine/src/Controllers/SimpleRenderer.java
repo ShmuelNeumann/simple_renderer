@@ -7,6 +7,7 @@ import geometry.Camera;
 import geometry.Edge;
 import geometry.Face;
 import geometry.Vertex;
+import utils.RenderType;
 import utils.ScreenCoord;
 import utils.Vector3;
 import utils.VectorMath;
@@ -35,21 +36,15 @@ public class SimpleRenderer {
 
         Vector3 camToVertex = VectorMath.subtract(vertex.getPosition(), camMan.getCamera().getPosition());
 
-        // check if the vertex is within the FOV
         Vector3 camVerticalPlaneNormal = VectorMath.crossProduct(camMan.getCamera().getForwardDirection(), camMan.getCamera().getUpwardDirection());
-        Vector3 canToVertexVerticalComponent = VectorMath.projectionOnSurface(camToVertex, camVerticalPlaneNormal);
-        //double camToVertexVerticalAngle = VectorMath.angleBetween(camMan.getCamera().getForwardDirection(), canToVertexVerticalComponent);
+        Vector3 camToVertexVerticalComponent = VectorMath.projectionOnSurface(camToVertex, camVerticalPlaneNormal);
 
         Vector3 camHorizontalPlaneNormal = camMan.getCamera().getUpwardDirection();
         Vector3 camToVertexHorizontalComponent = VectorMath.projectionOnSurface(camToVertex, camHorizontalPlaneNormal);
-        //double camToVertexHorizontalAngle = VectorMath.angleBetween(camMan.getCamera().getForwardDirection(), camToVertexHorizontalComponent);
 
-        // if (camToVertexHorizontalAngle >= 90 || camToVertexVerticalAngle >= 90) {
-        //     return null;
-        // }
 
         // find the angle from the cam upwards vector to the vertical projection of the camToVertex.
-        double angleFromCamUpTovertex = VectorMath.angleBetween(canToVertexVerticalComponent, camMan.getCamera().getUpwardDirection());
+        double angleFromCamUpTovertex = VectorMath.angleBetween(camToVertexVerticalComponent, camMan.getCamera().getUpwardDirection());
         
         // check if the vertex is perpendicular to the lens:
         if (Math.abs(angleFromCamUpTovertex - 3.141593) < 1E-4 || Math.abs(angleFromCamUpTovertex) < 1E-4) {
@@ -92,32 +87,34 @@ public class SimpleRenderer {
         return new ScreenCoord((int)(relativeHorizontalOffset*display.getWidth()), (int)(relativeVerticalOffset*display.getHeight()));
     }
 
-    public void updateScreenVertices(LightManager lightManager, GeometryManager geometry, Display display, Camera cam) {
+    public void updateScreenVertices(RenderType renderType, LightManager lightManager, GeometryManager geometry, Display display, Camera cam) {
 
         display.clear();
+        
+        if (renderType == RenderType.POINTS) {
+            for (Vertex vertex : geometry.getVertices()) {
+                ScreenCoord vertexCoord = getVertexScreenCoordinates(vertex, display);
+                
+                if (vertexCoord == null) { 
+                    continue;
+                }
+                
+                System.out.println(vertex);
+                for (int x = -2; x < 3; x++) {
+                    for (int y = -2; y < 3; y++) {
+                        if (vertexCoord.getX()+x >= 0 && vertexCoord.getX()+x < display.getWidth()) {
+                            if (vertexCoord.getY()+y >= 0 && vertexCoord.getY()+y < display.getHeight()) {
+                                display.setPixel(vertexCoord.getX()+x, vertexCoord.getY()+y, new Rgb(0, 0, 0, 255));
 
-        System.out.println("\nDisplaying:");
+                            }
+                        }
+                    }
+                }
+            }
 
-        // for (Vertex vertex : geometry.getVertices()) {
-        //     ScreenCoord vertexCoord = getVertexScreenCoordinates(vertex, display);
+            return;
+        }
             
-        //     if (vertexCoord == null) { 
-        //         continue;
-        //     }
-            
-        //     System.out.println(vertex);
-        //     for (int x = -2; x < 3; x++) {
-        //         for (int y = -2; y < 3; y++) {
-        //             if (vertexCoord.getX()+x >= 0 && vertexCoord.getX()+x < display.getWidth()) {
-        //                 if (vertexCoord.getY()+y >= 0 && vertexCoord.getY()+y < display.getHeight()) {
-        //                     display.setPixel(vertexCoord.getX()+x, vertexCoord.getY()+y, new Rgb(0, 0, 0, 255));
-
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
-
         
         for (Face face : geometry.getFaces()) {
             // skip the vertex if it's not visible
@@ -127,9 +124,12 @@ public class SimpleRenderer {
                 continue;
             }
 
-            // displayEdge(face.getE1(), display);
-            // displayEdge(face.getE2(), display);
-            // displayEdge(face.getE3(), display);
+            if (renderType == RenderType.EDGES) {
+                displayEdge(face.getE1(), display);
+                displayEdge(face.getE2(), display);
+                displayEdge(face.getE3(), display);
+                continue;
+            }
 
 
             ScreenCoord v1Coord = getVertexScreenCoordinates(face.getE1().getV1(), display);
@@ -160,6 +160,17 @@ public class SimpleRenderer {
 
     public void displayEdge(Edge edge, Display display) {
 
+        ScreenCoord coord1 = getVertexScreenCoordinates(edge.getV1(), display);
+        ScreenCoord coord2 = getVertexScreenCoordinates(edge.getV2(), display);
+
+
+        Map<String, ScreenCoord> points = ScreenCoord.getPointsBetween(coord1,coord2);
+
+        for (ScreenCoord point : points.values()) {
+            if (point.getY() >= 0 && point.getY() < display.getHeight() && point.getX() >= 0 && point.getX() < display.getWidth()) {
+                display.setPixel(point.getX(), point.getY(), new Rgb(100, 100, 100, 255));
+            }
+        }
 
     }
 }
