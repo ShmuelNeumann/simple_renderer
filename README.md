@@ -88,6 +88,7 @@ Overall I  am extremely satisfied with this project, and I have a working progra
 However, there are several issues that I would like to fix sometime in the future when I have more time. The most obvious of these is the shading issue seen above, but there's also no culling of objects behind others currently which is obvious when another smaller cube is added.
 
 In addition, I would like to make the system for defining primitive shapes much easier, as even a simple cube took me a long time.
+
 ![enter image description here](https://onedrive.live.com/embed?resid=BE406011F5E2A3C1!488974&authkey=!AO4kDaqXxBX_z58&width=400)
 
 
