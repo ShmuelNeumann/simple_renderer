@@ -80,6 +80,7 @@ The final component is the actual render engine, which took the most amount of t
 	- I've uploaded a detailed version of this calculation onto a Google Collab [here](https://colab.research.google.com/drive/1gyfaAoTMASUxCD5GNEqldXt_A_CdP2EZ?usp=sharing), which I recommend looking into if you're interested.
 	- This class also has a function to loop through each face, calculate where each of the vertices should be on the screen, and fill in the pixels between these points with the right brightness from the *LightManager*. This method is called each frame to update the screen.
 	- The fill function to get all the pixels between three XY  coordinates was implemented with a recursive method, however integer rounding seems to have led to a strange pattern being formed. The following image shows two triangles forming a square, and the shading that forms from this algorithm.
+ - 
 ![enter image description here](https://onedrive.live.com/embed?resid=BE406011F5E2A3C1!488966&authkey=!ACuACdMtsAoqV4Q&width=336&height=314)
 
 ## Results and Potential Improvements
