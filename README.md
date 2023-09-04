@@ -1,8 +1,11 @@
 # 3D Render Engine
 ## Overview
 **Starting Date:** 29th May, 2023
-**Project Completion:** 27th July, 2022
+
+**Project Completion:** 27th July, 2023
+
 **Motivation:** Self-motivated, as a challenge
+
 **Status:** Complete, but may be improved in the future
 
 This is a challenge I took on to develop a 3 dimensional rendering engine from scratch, in Java. In was developed sporadically over two months.
